@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "devc": "concurrently \"next dev\" \"npm run ws\"",
+    "devc": "concurrently \"next dev\" \"npm run ws-local\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "dev": "next dev",
-    "ws": "node src/server/websocket.js"
+    "ws-local": "node src/server/websocket.js"
   },
   "dependencies": {
     "express": "^4.21.1",
