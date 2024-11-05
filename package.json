@@ -2,23 +2,28 @@
   "name": "plan-pal",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "concurrently \"next dev\" \"npm run ws\"",
+    "devc": "concurrently \"next dev\" \"npm run ws\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "ws": "node src/server/websocket.ts"
+    "dev": "next dev",
+    "ws": "node src/server/websocket.js"
   },
   "dependencies": {
+    "express": "^4.21.1",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
-    "ws": "^8.18.0"
+    "ws-dev": "^8.18.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/ws": "^8.5.13",
     "concurrently": "^9.1.0",
     "eslint": "^8",
     "eslint-config-next": "15.0.2",
