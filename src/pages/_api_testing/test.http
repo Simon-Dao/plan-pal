@@ -1,0 +1,10 @@
+curl -X GET http://localhost:3000/api/event/list \
+-H "Content-Type: application/json" \
+-d '{"user": "poop"}'
+
+###
+
+curl -X POST http://localhost:3000/api/event/create \
+-H "Content-Type: application/json" \
+-d '{"title": "Sample Event", "date": "2024-11-05", "eventDays":[], "timezone":"", "startTime": "", "endTime":""}'
+
