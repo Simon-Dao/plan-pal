@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 type JsonObject = { [key: string]: unknown };
 
@@ -38,7 +39,7 @@ export default function Home() {
     }
   }
 
-  function socketSend(message : JsonObject) {
+  function socketSend(message: JsonObject) {
     if (socket && socket.readyState === WebSocket.OPEN) {
       console.log("ready state");
       socket.send(JSON.stringify(message));
@@ -46,11 +47,26 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col">
-      <button className="open-socket m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={openSocket}>Open Socket</button>
-      <button className="close-socket m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={closeSocket}>Close Socket</button>
-      <button className="socket-send m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={()=>socketSend({message:"hello"})}>Send Message</button>
-      <p>{output}</p>
-    </div>
+      <div className="flex flex-col">
+        <button
+          className="open-socket m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={openSocket}
+        >
+          Open Socket
+        </button>
+        <button
+          className="close-socket m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={closeSocket}
+        >
+          Close Socket
+        </button>
+        <button
+          className="socket-send m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => socketSend({ message: "hello" })}
+        >
+          Send Message
+        </button>
+        <p>{output}</p>
+      </div>
   );
 }

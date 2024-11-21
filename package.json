@@ -12,12 +12,16 @@
     "ws-local": "node src/server/websocket.js"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "@vercel/postgres": "^0.10.0",
+    "bcrypt": "^5.1.1",
     "express": "^4.21.1",
-    "next": "15.0.2",
-    "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028",
-    "ws": "^8.18.0"
+    "next": "^15.0.3",
+    "next-auth": "^4.24.10",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "ws": "^8.18.0",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
