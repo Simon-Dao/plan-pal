@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import SignIn from './_components/SignIn'
 
-type JsonObject = { [key: string]: unknown };
-
-export default function Home() {
+function page() {
   
   return (
-      <div className="flex flex-col">
-        home page
-      </div>
+    <div className='flex flex-col items-center justify-center h-full'>
+      <SignIn/>
+    </div>
   );
 }
+
+export default page;
