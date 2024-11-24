@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
 import React from "react";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type NavItemType = {
   navName: string;
@@ -9,8 +10,10 @@ type NavItemType = {
 };
 
 function NavItem({ navName, navLink }: NavItemType) {
+  const router = useRouter();
+
   const onClick = () => {
-    redirect(navLink);
+    router.push(navLink);
   };
 
   return (

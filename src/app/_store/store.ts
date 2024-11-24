@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { CalendarDataType, CalendarType } from "../_utils/types";
 
 type SessionStateType = {
   clientId: string;
@@ -26,5 +27,24 @@ export const useSessionStore = create<SessionStore>((set) => ({
         clientId: "",
         credential: "",
       },
+    })),
+}));
+
+type CalendarStore = {
+  data: CalendarDataType;
+  setData: (newSession: CalendarDataType) => void;
+};
+
+export const useCalendarStore = create<CalendarStore>((set) => ({
+  data: {
+    type: "Specific Date" as CalendarType,
+    timezone: "",
+    startTime: "",
+    endTime: "",
+    days: [],
+  },
+  setData: (newVal) =>
+    set(() => ({
+      data: newVal,
     })),
 }));
