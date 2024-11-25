@@ -27,6 +27,7 @@ export type DayData = {
 };
 
 export type CalendarDataType = {
+  name: string;
   type: CalendarType;
   timezone: string
   startTime: Time24Hour | "";

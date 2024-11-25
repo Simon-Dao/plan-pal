@@ -7,17 +7,19 @@ import { useRouter } from "next/navigation";
 type NavItemType = {
   navName: string;
   navLink: string;
+  onClick?: Function;
 };
 
-function NavItem({ navName, navLink }: NavItemType) {
+function NavItem({ navName, navLink, onClick }: NavItemType) {
   const router = useRouter();
 
-  const onClick = () => {
+  const onClick_ = () => {
+    if(onClick) onClick();
     router.push(navLink);
   };
 
   return (
-    <button onClick={onClick} className="m-3">
+    <button onClick={onClick_} className="m-3">
       {navName}
     </button>
   );

@@ -1,13 +1,61 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState } from "react";
 import { useCalendarStore } from "../_store/store";
 import { CalendarDataType, DayData } from "../_utils/types";
 
-type JsonObject = { [key: string]: unknown };
+type DayProps = { i: number; day: DayData; calendarData: CalendarDataType };
+type HourAxisProps = { calendarData: CalendarDataType };
 
-function Day({ day }: { day: DayData }) {
-  return <div>{day.date}</div>;
+function HourAxis({ calendarData }: HourAxisProps) {
+  const start = parseInt(calendarData.startTime.substring(0, 2));
+  const end = parseInt(calendarData.endTime.substring(0, 2));
+
+  const timeElapsed = end - start;
+  const hoursArray = Array.from(
+    { length: timeElapsed + 2 },
+    (_, j) => start + j
+  );
+
+  return (
+    <div>
+      {hoursArray.map((hour, j) => (
+        <div className="flex justify-end" key={j}>
+          <div
+            style={{ bottom: "10px" }}
+            className="relative h-7 w-11 flex items-center"
+          >
+            {j > 0 && <>{hour}:00</>}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Day({ i, day, calendarData }: DayProps) {
+  const start = parseInt(calendarData.startTime.substring(0, 2));
+  const end = parseInt(calendarData.endTime.substring(0, 2));
+
+  const timeElapsed = end - start;
+  const blocksArray = Array.from({ length: timeElapsed + 1 });
+
+  return (
+    <div className="bg-gray-400">
+      <div className="h-7 w-full" style={{ backgroundColor: "#ededed" }}>
+        {day.date}
+      </div>
+      {blocksArray.map((_, j) => (
+        <div
+          className="border-b border-r border-dotted border-black"
+          key={`${i}-${j}`}
+        >
+          <div className={"h-7 w-full"}></div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default function Event() {
@@ -15,117 +63,76 @@ export default function Event() {
   const [output, setOutput] = useState<string>("");
 
   useEffect(() => {
-    //TODO - for now -> every reload grabs data from the server 
-  })
+    // TODO - Add logic for socket management or server data fetching
+  }, []);
 
-  //for live updates from other users
-  function openSocket() {
-    const newSocket = new WebSocket("ws://localhost:6969");
-    setSocket(newSocket);
-
-    newSocket.addEventListener("error", () => {
-      setOutput("Socket Error");
-    });
-
-    newSocket.addEventListener("open", () => {
-      setOutput("Socket Connected");
-    });
-
-    newSocket.addEventListener("close", () => {
-      setOutput("Socket Closed");
-    });
-
-    newSocket.addEventListener("message", (msg: MessageEvent<string>) => {
-      // Here we assume msg.data is a string and cast it
-
-      const messageJSON = JSON.parse(msg.data);
-      setOutput(`Received message: ${messageJSON}`);
-    });
-  }
-
-  function closeSocket() {
-    if (socket) {
-      socket.close();
-    }
-  }
-
-  function socketSend(message: JsonObject) {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      console.log("ready state");
-      socket.send(JSON.stringify(message));
-    }
-  }
-
-  //for now just use zustand storage
-  const data = useCalendarStore((store) => store.data);
-  const setCalendarData = useCalendarStore((store) => store.setData);
-  let calendarData = useCalendarStore((store) => store.data);
+  const calendarData = useCalendarStore((store) => store.data);
 
   return (
-    <div className="flex justify-center items-center h-full">
-      {/* <button
-          className="open-socket m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={openSocket}
-        >
-          Open Socket
-        </button>
-        <button
-          className="close-socket m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={closeSocket}
-        >
-          Close Socket
-        </button>
-        <button
-          className="socket-send m-2  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => socketSend({ message: "hello" })}
-        >
-          Send Message
-        </button>
-        <p>{output}</p> */}
+    <div className="flex flex-col justify-center w-full h-full">
+      <div className="flex justify-center w-full">
+        <div className="flex flex-col">
+          {/* Enter your name or sign in */}
+          <div className="h-56 w-96 p-4 bg-white border rounded-md shadow-md">
+            <h1 className="text-lg font-semibold">Sign In</h1>
+            <div className="flex items-center gap-2 mt-2">
+              <h2>Your Name:</h2>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                className="border p-1 rounded-md w-full"
+              />
+            </div>
+            <h1 className="text-center mt-4">Or</h1>
+            <button className="w-full mt-2 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+              Sign In
+            </button>
+          </div>
 
-      <div>
-        <h1>Sign In</h1>
-        <div className="flex">
-          <h2>Your Name:</h2>
-          <input type="text" />
+          {/* Filters */}
+          <div className="mt-4 h-56 w-96 p-4 bg-white border rounded-md shadow-md grow">
+            <h1 className="text-lg font-semibold">Prioritize</h1>
+            <div className="flex items-center gap-2 mt-2">
+              <input
+                type="text"
+                placeholder="Enter your name"
+                className="border p-1 rounded-md w-full"
+              />
+            </div>
+            <h1 className="text-lg font-semibold">Remove</h1>
+            <div className="flex items-center gap-2 mt-2">
+              <input
+                type="text"
+                placeholder="Enter your name"
+                className="border p-1 rounded-md w-full"
+              />
+            </div>
+          </div>
         </div>
-        <h1>Or</h1>
-        <button>Sign In</button>
 
+        {/* Calendar */}
         <div>
-          <div className="flex">
-            <h1>Prioritize</h1>
-            <input type="text" />
-            <div>
-              {/* all people in priority list */}
-              priority
+          <div className="flex justify-center w-full h-10">
+            <h1 className="justify-self-center text-xl font-bold mb-4">
+              {calendarData.name}
+            </h1>
+          </div>
+          <div
+            className={`pt-1 grid gap-1`}
+            style={{
+              gridTemplateColumns: `100px repeat(${calendarData.days.length}, minmax(80px, 1fr))`,
+            }}
+          >
+            {/* Hour Axis */}
+            <div className="sticky left-0">
+              <HourAxis calendarData={calendarData} />
             </div>
+
+            {/* Dynamic Day Columns */}
+            {calendarData.days.map((day, i) => (
+              <Day i={i} calendarData={calendarData} key={day.date} day={day} />
+            ))}
           </div>
-          <div>
-            {/* filter */}
-            filter
-          </div>
-          <div className="flex">
-            <h1>Filter</h1>
-            <input type="text" />
-            <div>
-              {/* all people in priority list */}
-              priority
-            </div>
-          </div>
-          <div>
-            {/* filter */}
-            filter
-          </div>
-        </div>
-      </div>
-      <div>
-        {calendarData.startTime}
-        {calendarData.endTime}
-        <div className="flex">
-          {calendarData.days.map((day) => {
-            return <Day key={day.date} day={day} />;
-          })}
         </div>
       </div>
     </div>
