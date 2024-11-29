@@ -58,6 +58,8 @@ export const useSessionStore = create<SessionStore>()(
 type CalendarStore = {
   data: CalendarDataType;
   setData: (newData: CalendarDataType) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addBookings: (date: string, newBookings: any[]) => void; // Replace `any` with a specific type if you have one for bookings
 };
 
 export const useCalendarStore = create<CalendarStore>()(
@@ -74,6 +76,17 @@ export const useCalendarStore = create<CalendarStore>()(
       setData: (newData) =>
         set(() => ({
           data: newData,
+        })),
+      addBookings: (date, newBookings) =>
+        set((state) => ({
+          data: {
+            ...state.data,
+            days: state.data.days.map((day) =>
+              day.date === date
+                ? { ...day, bookings: newBookings } // Replace bookings instead of appending
+                : day
+            ),
+          },
         })),
     }),
     {

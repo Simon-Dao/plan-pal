@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useCalendarStore } from "../_store/store";
-import { CalendarDataType, DayData } from "../_utils/types";
+import { Booking, CalendarDataType, DayData } from "../_utils/types";
 
 type DayProps = {
   i: number;
@@ -43,6 +43,40 @@ function Day({ i, day, calendarData, dragState }: DayProps) {
   const start = parseInt(calendarData.startTime.substring(0, 2));
   const end = parseInt(calendarData.endTime.substring(0, 2));
   const blocksArray = Array.from({ length: end - start + 1 });
+  const [draggedBlocks, setDraggedBlocks] = useState<boolean[]>(
+    Array(blocksArray.length).fill(false)
+  );
+  
+  const addBookings = useCalendarStore((store) => store.addBookings)
+
+  useEffect(() => {
+    const newBookings: Booking[] = [];
+    let started = false;
+    let temp: Booking | null = null;
+  
+    for (let i = 0; i < draggedBlocks.length; i++) {
+      if (draggedBlocks[i] && !started) {
+        // Start a new booking
+        started = true;
+        temp = {
+          name: "",
+          startTime: `${parseInt(calendarData.startTime.substring(0, 2)) + i}:00`,
+          endTime: "00:00",
+        };
+      } else if ((!draggedBlocks[i] && started) || (started && i === draggedBlocks.length - 1)) {
+        // End the current booking
+        if (temp) {
+          temp.endTime = `${parseInt(calendarData.startTime.substring(0, 2)) + i}:00`;
+          newBookings.push(temp);
+          temp = null;
+        }
+        started = false;
+      }
+    }
+    
+    console.log(newBookings);
+    addBookings(day.date, newBookings);
+  }, [draggedBlocks, calendarData.startTime, day.date, addBookings]);  
 
   const getDragRect = () => {
     const { dragStart, dragEnd } = dragState;
@@ -57,6 +91,14 @@ function Day({ i, day, calendarData, dragState }: DayProps) {
     };
   };
 
+  const toggleBlock = (blockIndex: number, isDragged: boolean) => {
+    setDraggedBlocks((prev) => {
+      const updated = [...prev];
+      updated[blockIndex] = isDragged;
+      return updated;
+    });
+  };
+
   return (
     <div className="bg-gray-400">
       <div className="h-7 w-full bg-gray-200 select-none">{day.date}</div>
@@ -66,6 +108,7 @@ function Day({ i, day, calendarData, dragState }: DayProps) {
             getDragRect={getDragRect}
             dragEnd={dragState.dragEnd}
             dragging={!!dragState.dragStart}
+            toggleBlock={(isDragged) => toggleBlock(j, isDragged)}
           />
         </div>
       ))}
@@ -77,10 +120,13 @@ function Block({
   getDragRect,
   dragEnd,
   dragging,
+  toggleBlock,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getDragRect: () => any;
   dragEnd: Point | null;
   dragging: boolean;
+  toggleBlock: (isDragged: boolean) => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isSelected, setIsSelected] = useState(false);
@@ -102,13 +148,17 @@ function Block({
 
     if (dragging) {
       if (checkBounds() && !hasBeenDraggedOver.current) {
-        setIsSelected((prev) => !prev);
+        setIsSelected((prev) => {
+          const newState = !prev;
+          toggleBlock(newState);
+          return newState;
+        });
         hasBeenDraggedOver.current = true;
       }
     } else {
       hasBeenDraggedOver.current = false;
     }
-  }, [dragging, dragEnd, getDragRect]);
+  }, [dragging, dragEnd, getDragRect, toggleBlock]);
 
   return (
     <div

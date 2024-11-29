@@ -10,7 +10,7 @@ export type DayOfWeek =
   | "Saturday"
   | "Sunday";
 
-export type Time24Hour = `${number}:${number}`;
+export type Time24Hour = string;
 
 export type DayType = DateString | DayOfWeek;
 
