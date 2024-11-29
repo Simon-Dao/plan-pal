@@ -10,9 +10,15 @@ type Event = {
   created: DateString
 };
 
+type DecodedJWT = {
+  email: string;
+  exp?: number;
+  iat?: number;
+};
+
 function MyEvents() {
   const session = useSessionStore(store => store.session);
-  const [events, setEvents] = useState<Event[]>([
+  const [events, ] = useState<Event[]>([
     {name: 'asdsaas', created:'11/24/2024'},
     {name: 'asdsaas', created:'11/24/2024'},
     {name: 'asdsaas', created:'11/24/2024'},
@@ -20,16 +26,24 @@ function MyEvents() {
     {name: 'asdsaas', created:'11/24/2024'},
   ]);
 
+  const [email, setEmail] = useState("n/a");
+
   useEffect(() => {
     // TODO - Placeholder for fetching events logic
+    try {
+      setEmail(jwtDecode<DecodedJWT>(session.credential).email); // Assuming session.credential is a valid JWT token
+    } catch(error) {
+      console.error("Invalid Token", error);
+    }
     // This would typically involve fetching from an API and updating the state
-  }, []);
+  }, [session.credential]);
 
-  const decode : any = jwtDecode(session.credential); // Assuming session.credential is a valid JWT token
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 
   return (
     <div className='flex flex-col items-center w-full mt-8'>
-      <h1 className='text-2xl font-semibold'>Signed in with {decode.email}</h1>
+      <h1 className='text-2xl font-semibold'>Signed in with {email}</h1>
 
       <div className='mt-4 w-full max-w-4xl'>
         {events.length > 0 ? (

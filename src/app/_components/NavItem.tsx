@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 type NavItemType = {
   navName: string;
   navLink: string;
-  onClick?: Function;
+  onClick?: ()=> void;
 };
 
 function NavItem({ navName, navLink, onClick }: NavItemType) {

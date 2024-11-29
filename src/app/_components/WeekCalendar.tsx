@@ -35,7 +35,7 @@ type WeekCalendarProps = {
 };
 
 function WeekCalendar({ selectedState }: WeekCalendarProps) {
-  const [selectedDays, setSelectedDays] = selectedState;
+  const [, setSelectedDays] = selectedState;
 
   // Define the default values for weekdays
   const defaultVal: WeekdayType[] = [
