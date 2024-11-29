@@ -6,6 +6,7 @@ type CalendarDateProps = {
   onClick: () => void;
 };
 type SelectedStateType = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: DayData[] | any;
 };
 function CalendarDate({ day, clicked, onClick }: CalendarDateProps) {
@@ -31,7 +32,7 @@ function MonthlyCalendar(selectedState: SelectedStateType) {
   const [clickedDates, setClickedDates] = useState<{ [key: string]: boolean }>(
     {}
   ); // Map for clicked dates
-  const [selectedDays, setSelectedDays] = selectedState.selectedState;
+  const [, setSelectedDays] = selectedState.selectedState;
 
   // Generate the days for the selected month and year
   const generateCalendar = (month: number, year: number) => {
