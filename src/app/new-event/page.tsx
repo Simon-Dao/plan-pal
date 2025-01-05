@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 function NewEvent() {
   const [selectedCalendarType, setSelectedCalendarType] = useState<CalendarType>("Specific Weekdays");
   const [selectedTimezone, setSelectedTimezone] = useState<string>(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  const [selectedStartTime, setSelectedStartTime] = useState<Time24Hour>("00:00");
-  const [selectedEndTime, setSelectedEndTime] = useState<Time24Hour>("00:00");
+  const [selectedStartTime, setSelectedStartTime] = useState<Time24Hour>(0);
+  const [selectedEndTime, setSelectedEndTime] = useState<Time24Hour>(23);
   const [selectedDays, setSelectedDays] = useState<DayData[]>([]);
   const [calendarName, setCalendarName] = useState("");
 
@@ -43,15 +43,16 @@ function NewEvent() {
   };
 
   const handleStartTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedStartTime(event.target.value as Time24Hour);
+    setSelectedStartTime(parseInt(event.target.value) as Time24Hour);
   };
 
   const handleEndTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedEndTime(event.target.value as Time24Hour);
+    setSelectedEndTime(parseInt(event.target.value) as Time24Hour);
   };
 
   const timezones = Intl.supportedValuesOf ? Intl.supportedValuesOf("timeZone") : ["UTC", "America/New_York", "Europe/London", "Asia/Tokyo", "Australia/Sydney"];
-  const generateTimeOptions = () => Array.from({ length: 24 }, (_, i) => `${i < 10 ? `0${i}` : `${i}`}:00`);
+  // const generateTimeOptions = () => Array.from({ length: 24 }, (_, i) => `${i < 10 ? `0${i}` : `${i}`}:00`);
+  const generateTimeOptions = () => Array.from({ length: 24 }, (_, i) => i);
 
   return (
     <div className="flex flex-col items-center w-full py-8">

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-// import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 type NavItemType = {

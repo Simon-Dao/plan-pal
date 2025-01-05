@@ -1,4 +1,4 @@
-import { create } from "zustand";
+ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { CalendarDataType, CalendarType } from "../_utils/types";
 
@@ -69,10 +69,11 @@ export const useCalendarStore = create<CalendarStore>()(
         name: "",
         type: "Specific Date" as CalendarType,
         timezone: "",
-        startTime: "",
-        endTime: "",
+        startTime: 0,
+        endTime: 23,
         days: [],
       },
+      
       setData: (newData) =>
         set(() => ({
           data: newData,
