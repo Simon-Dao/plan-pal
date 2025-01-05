@@ -20,7 +20,8 @@ function SignIn() {
     if (response.credential) {
       setSession({
         clientId: response.clientId ?? "",
-        credential: response.credential,
+        tempId: "",
+        credential: response.credential
       });
 
       redirect("/new-event");

@@ -2,13 +2,14 @@
 "use client";
 
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { useCalendarStore } from "../_store/store";
+import { SessionStateType, useCalendarStore, useSessionStore } from "../_store/store";
 import {
   Booking,
   CalendarDataType,
   DayData,
   Time24Hour,
 } from "../_utils/types";
+import { SessionState } from "http2";
 
 type DayProps = {
   i: number;
@@ -165,6 +166,8 @@ export default function Event() {
   const [tempSignin, setTempSignin] = useState("");
   const [save, setSave] = useState(false);
   const [blockStates, setBlockStates] = useState([[false]]);
+  const session = useSessionStore((store) => store.session)
+  const setSession = useSessionStore((store) => store.setSession)
   const calendarData = useCalendarStore((store) => store.data);
   const addBookings = useCalendarStore((store) => store.addBookings);
 
@@ -182,7 +185,6 @@ export default function Event() {
     const end = calendarData.endTime;
 
     const numHours = end - start + 1;
-
 
     const newBlockStates = Array.from({ length: numDays }, () => 
       Array.from({ length: numHours+1 }, () => false)
@@ -211,7 +213,8 @@ export default function Event() {
   }, [calendarData]);
 
   const signInTemp = () => {
-    setTempSignin(signInInput);
+    session.tempId = signInInput
+    setSession(session);
   };
 
   const saveNewBookings = () => {
@@ -253,7 +256,7 @@ export default function Event() {
 
   const controlPanel =
     // sessionData.clientId === "" &&
-    tempSignin === "" ? (
+    session.tempId === "" ? (
       <div className="h-56 w-96 p-4 bg-white border rounded-md shadow-md">
         <h1 className="text-lg font-semibold">Sign In</h1>
         <div className="flex items-center gap-2 mt-2">
@@ -275,7 +278,7 @@ export default function Event() {
       </div>
     ) : (
       <div className="h-56 w-96 p-4 bg-white border rounded-md shadow-md">
-        <h1 className="text-lg font-semibold">{tempSignin}</h1>
+        <h1 className="text-lg font-semibold">{session.tempId}</h1>
         <div className="flex items-center gap-2 mt-2"></div>
         <button
           onClick={saveNewBookings}
@@ -316,18 +319,18 @@ export default function Event() {
               gridTemplateColumns: `100px repeat(${calendarData.days.length}, minmax(80px, 1fr))`,
             }}
             onMouseDown={(event) => {
-              if (tempSignin === "") return;
+              if (session.tempId === "") return;
               setDragging(true);
               setDragStart({ x: event.clientX, y: event.clientY });
             }}
             onMouseUp={() => {
-              if (tempSignin === "") return;
+              if (session.tempId === "") return;
               setDragging(false);
               setDragStart(null);
               setDragEnd(null);
             }}
             onMouseMove={(event) => {
-              if (tempSignin === "") return;
+              if (session.tempId === "") return;
               if (dragging) setDragEnd({ x: event.clientX, y: event.clientY });
             }}
           >
@@ -336,7 +339,7 @@ export default function Event() {
             </div>
             {calendarData.days.map((day, i) => (
               <Day
-                bookerName={tempSignin}
+                bookerName={session.tempId}
                 key={day.date}
                 i={i}
                 day={day}

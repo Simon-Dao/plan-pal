@@ -17,8 +17,9 @@ const customStorage = {
 };
 
 // Session Store
-type SessionStateType = {
+export type SessionStateType = {
   clientId: string;
+  tempId: string;
   credential: string;
 };
 
@@ -33,6 +34,7 @@ export const useSessionStore = create<SessionStore>()(
     (set) => ({
       session: {
         clientId: "",
+        tempId: "",
         credential: "",
       },
       setSession: (newSession) =>
@@ -43,7 +45,8 @@ export const useSessionStore = create<SessionStore>()(
         set(() => ({
           session: {
             clientId: "",
-            credential: "",
+            tempId: "",
+            credential: ""
           },
         })),
     }),
